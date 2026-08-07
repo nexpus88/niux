@@ -1,6 +1,9 @@
 # Dependencies
 node_modules/
 
+# Build output
+dist/
+
 # Agent / IDE local state (skills, generated knowledge)
 .qoder/
 
