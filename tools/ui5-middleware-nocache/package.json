@@ -1,0 +1,6 @@
+{
+  "name": "ui5-middleware-nocache",
+  "version": "1.0.0",
+  "description": "Dev middleware: disables browser caching for all served resources",
+  "main": "index.js"
+}

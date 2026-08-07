@@ -1,0 +1,208 @@
+<mvc:View
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:f="sap.f"
+    xmlns:layout="sap.ui.layout"
+    xmlns:core="sap.ui.core"
+    controllerName="com.layout.editor.controller.EditorView"
+    displayBlock="true">
+
+    <VBox id="editorShell" height="100%">
+
+        <!-- Top Toolbar -->
+        <Toolbar>
+            <Button
+                icon="sap-icon://nav-back"
+                press="onNavBack"
+                tooltip="{i18n>tooltip.back}"/>
+            <Title text="Layout Editor" level="H4"/>
+            <Text text="- {appModel>/currentAppId}" class="sapUiSmallMarginBegin"/>
+            <ToolbarSpacer/>
+            <Button
+                id="btnUndo"
+                icon="sap-icon://undo"
+                tooltip="{i18n>tooltip.undo}"
+                press="onPressUndo"/>
+            <Button
+                id="btnRedo"
+                icon="sap-icon://redo"
+                tooltip="{i18n>tooltip.redo}"
+                press="onPressRedo"/>
+            <Button
+                id="btnSe24"
+                text="SE24"
+                icon="sap-icon://workflow-tasks"
+                type="Transparent"
+                tooltip="{i18n>tooltip.se24}"
+                press="onPressSe24"/>
+            <Button
+                id="btnSave"
+                text="{i18n>button.save}"
+                icon="sap-icon://save"
+                type="Emphasized"
+                tooltip="{i18n>tooltip.save}"
+                press="onPressSave"/>
+        </Toolbar>
+
+        <HBox id="editorLayout" class="editorLayout">
+            <layoutData>
+                <!-- Fill exactly the space between toolbar and footer;
+                     height="100%" would overflow the shell by the bar heights.
+                     min-height:0 comes from .editorLayout !important in style.css
+                     (UI5 writes min-height:auto inline onto this item). -->
+                <FlexItemData growFactor="1" shrinkFactor="1" baseSize="0"/>
+            </layoutData>
+
+                <!-- Left Panel: Outline Tree -->
+                <VBox id="leftPane" class="leftPane" height="100%" width="320px">
+                    <ScrollContainer
+                        height="100%"
+                        width="100%"
+                        vertical="true">
+                        <Tree
+                            id="outlineTree"
+                            mode="SingleSelectMaster"
+                            selectionChange="onOutlineSelect"
+                            width="100%"
+                            class="outlineTree"/>
+                    </ScrollContainer>
+                </VBox>
+
+                <!-- Left splitter drag handle -->
+                <core:HTML id="leftSplitterBar" content="&lt;div class='splitterBar'&gt;&lt;/div&gt;"/>
+
+                <!-- Center: Canvas -->
+                <VBox id="centerPane" class="centerPane" height="100%">
+                    <layoutData>
+                        <FlexItemData growFactor="1"/>
+                    </layoutData>
+                    <!-- Canvas Toolbar -->
+                    <Toolbar>
+                        <Title text="Canvas" level="H5"/>
+                        <ToolbarSpacer/>
+                        <SegmentedButton
+                            id="canvasMode"
+                            selectedKey="design"
+                            selectionChange="onCanvasModeChange">
+                            <items>
+                                <SegmentedButtonItem
+                                    key="design"
+                                    icon="sap-icon://edit"
+                                    text="Design"/>
+                                <SegmentedButtonItem
+                                    key="code"
+                                    icon="sap-icon://source-code"
+                                    text="Code"/>
+                                <SegmentedButtonItem
+                                    key="preview"
+                                    icon="sap-icon://show"
+                                    text="Preview"/>
+                            </items>
+                        </SegmentedButton>
+                        <ToolbarSpacer/>
+                        <Button
+                            icon="sap-icon://zoom-in"
+                            tooltip="{i18n>tooltip.zoomIn}"
+                            press="onZoomIn"/>
+                        <Button
+                            icon="sap-icon://zoom-out"
+                            tooltip="{i18n>tooltip.zoomOut}"
+                            press="onZoomOut"/>
+                        <Button
+                            icon="sap-icon://full-screen"
+                            tooltip="{i18n>tooltip.fullscreen}"
+                            press="onFullScreen"/>
+                    </Toolbar>
+
+                    <!-- Canvas Area -->
+                    <Panel
+                        id="canvasPanel"
+                        height="100%"
+                        class="editorCanvas">
+                        <layoutData>
+                            <!-- Fill exactly the remaining height of the center pane -->
+                            <FlexItemData growFactor="1" shrinkFactor="1" baseSize="0"/>
+                        </layoutData>
+                        <content>
+                            <VBox
+                                id="canvasRoot"
+                                class="canvasContent"
+                                width="100%"
+                                height="100%">
+                                <!-- Design target: controls are added into this Page -->
+                                <VBox id="designCanvas" class="designCanvas">
+                                    <Page id="designPage"/>
+                                </VBox>
+                                <!-- Code View (hidden by default, read-only) -->
+                                <TextArea
+                                    id="codeView"
+                                    value="{appModel>/currentXml}"
+                                    width="100%"
+                                    height="100%"
+                                    visible="false"
+                                    editable="false"
+                                    growing="true"/>
+                            </VBox>
+                        </content>
+                    </Panel>
+                </VBox>
+
+                <!-- Right splitter drag handle -->
+                <core:HTML id="rightSplitterBar" content="&lt;div class='splitterBar'&gt;&lt;/div&gt;"/>
+
+                <!-- Right Panel: Properties / Aggregations / Events Tabs -->
+                <VBox id="rightPane" class="rightPane" height="100%" width="320px">
+                    <!-- No selection placeholder -->
+                    <VBox id="noSelection" class="sapUiSmallMargin">
+                    </VBox>
+
+                    <!-- Tabbed inspector (hidden until a control is selected) -->
+                    <IconTabBar
+                        id="propertiesContent"
+                        visible="false"
+                        expandable="false"
+                        selectedKey="properties"
+                        backgroundDesign="Transparent"
+                        class="rightTabBar">
+                        <items>
+                            <!-- Properties Tab -->
+                            <IconTabFilter key="properties" text="Properties">
+                                <ScrollContainer height="100%" width="100%" vertical="true">
+                                    <VBox class="sapUiTinyMargin">
+                                        <ObjectIdentifier
+                                            id="selectedElementInfo"
+                                            title="{appModel>/selectedControl/type}"/>
+                                        <VBox id="dynamicProperties"/>
+                                        <Button
+                                            id="btnDeleteControl"
+                                            text="{i18n>button.deleteControl}"
+                                            icon="sap-icon://delete"
+                                            type="Reject"
+                                            width="100%"
+                                            class="sapUiSmallMarginTop"
+                                            press="onPressDeleteControl"/>
+                                    </VBox>
+                                </ScrollContainer>
+                            </IconTabFilter>
+
+                            <!-- Events Tab -->
+                            <IconTabFilter key="events" text="Events">
+                                <VBox id="dynamicEvents" class="sapUiTinyMargin"/>
+                            </IconTabFilter>
+                        </items>
+                    </IconTabBar>
+                </VBox>
+
+        </HBox>
+
+        <!-- Footer -->
+        <OverflowToolbar>
+            <Text text="{appModel>/currentAppId}"/>
+            <ToolbarSpacer/>
+            <Text text="{parts:[{path:'appModel>/controlCount'},{path:'i18n>text.controls'}], formatter:'.formatControlCount'}"/>
+            <Text text="|" class="sapUiSmallMarginBegin sapUiSmallMarginEnd"/>
+            <Text text="Layout Editor v1.0"/>
+        </OverflowToolbar>
+
+    </VBox>
+</mvc:View>

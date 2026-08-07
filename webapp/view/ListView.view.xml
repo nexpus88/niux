@@ -1,0 +1,135 @@
+<mvc:View
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:f="sap.f"
+    xmlns:layout="sap.ui.layout"
+    controllerName="com.layout.editor.controller.ListView"
+    displayBlock="true">
+
+    <Page
+        id="listPage"
+        title="Layout Editor - 앱 관리"
+        showNavButton="false"
+        backgroundDesign="Solid">
+
+        <!-- Toolbar: CRUD Buttons -->
+        <customHeader>
+            <Toolbar>
+                <Title text="앱 관리" level="H3"/>
+                <ToolbarSpacer/>
+                <Button
+                    id="btnCreate"
+                    text="생성"
+                    icon="sap-icon://add"
+                    type="Transparent"
+                    press="onPressCreate"/>
+                <Button
+                    id="btnEdit"
+                    text="편집"
+                    icon="sap-icon://edit"
+                    type="Transparent"
+                    press="onPressEdit"/>
+                <Button
+                    id="btnDelete"
+                    text="삭제"
+                    icon="sap-icon://delete"
+                    type="Transparent"
+                    press="onPressDelete"/>
+                <Button
+                    id="btnCopy"
+                    text="복사"
+                    icon="sap-icon://duplicate"
+                    type="Transparent"
+                    press="onPressCopy"/>
+                <Button
+                    id="btnSearch"
+                    text="조회"
+                    icon="sap-icon://search"
+                    type="Transparent"
+                    press="onPressSearch"/>
+                <Button
+                    id="btnExecute"
+                    text="실행"
+                    icon="sap-icon://play"
+                    type="Emphasized"
+                    press="onPressExecute"/>
+            </Toolbar>
+        </customHeader>
+
+        <content>
+            <!-- Search Bar -->
+            <layout:VerticalLayout class="sapUiSmallMarginBegin sapUiSmallMarginTop" width="100%">
+                <layout:HorizontalLayout>
+                    <SearchField
+                        id="searchField"
+                        placeholder="앱 ID로 검색..."
+                        width="300px"
+                        search="onSearch"/>
+                </layout:HorizontalLayout>
+            </layout:VerticalLayout>
+
+            <!-- App List Table -->
+            <Table
+                id="appTable"
+                class="sapUiSmallMarginTop"
+                items="{appModel>/apps}"
+                mode="SingleSelectMaster"
+                backgroundDesign="Translucent">
+                <headerToolbar>
+                    <Toolbar>
+                        <Title text="앱 목록"/>
+                        <ToolbarSpacer/>
+                        <Text text="{appModel>/appCount} 개 앱"/>
+                    </Toolbar>
+                </headerToolbar>
+                <columns>
+                    <Column>
+                        <Text text="앱 ID"/>
+                    </Column>
+                    <Column>
+                        <Text text="앱 이름"/>
+                    </Column>
+                    <Column>
+                        <Text text="설명"/>
+                    </Column>
+                    <Column>
+                        <Text text="생성일"/>
+                    </Column>
+                    <Column>
+                        <Text text="수정일"/>
+                    </Column>
+                    <Column>
+                        <Text text="상태"/>
+                    </Column>
+                </columns>
+                <items>
+                    <ColumnListItem
+                        type="Navigation"
+                        press="onPressApp">
+                        <cells>
+                            <ObjectIdentifier
+                                title="{appModel>appId}"
+                                text="{appModel>appType}"/>
+                            <Text text="{appModel>appName}"/>
+                            <Text text="{appModel>description}"/>
+                            <Text text="{appModel>createdAt}"/>
+                            <Text text="{appModel>updatedAt}"/>
+                            <ObjectStatus
+                                text="{appModel>status}"
+                                state="{appModel>statusState}"/>
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </content>
+
+        <!-- Footer -->
+        <footer>
+            <OverflowToolbar>
+                <ToolbarSpacer/>
+                <Text text="Layout Editor v1.0"/>
+            </OverflowToolbar>
+        </footer>
+
+    </Page>
+</mvc:View>

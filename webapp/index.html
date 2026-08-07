@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>SAPUI5 Layout Editor</title>
+    <script>
+        // Dev-server cache busting: ui5 serve answers with ETags, so a cached
+        // index.html would keep serving stale CSS/XML forever. Force a fresh
+        // top-level load on every navigation.
+        if (!location.search.includes("_cb=")) {
+            var sSep = location.search ? "&" : "?";
+            location.replace(location.href.split("#")[0] + sSep + "_cb=" + Date.now() +
+                (location.hash || ""));
+        }
+    </script>
+    <script>
+        // UI5 version / theme are centralized in config/appConfig.json.
+        // The bootstrap script is created dynamically after loading it.
+        (function () {
+            "use strict";
+            var DEFAULTS = {
+                cdn: "https://sapui5.hana.ondemand.com",
+                version: "",
+                theme: "sap_horizon",
+                compatVersion: "edge"
+            };
+
+            function bootstrap(oUi5) {
+                var oCfg = Object.assign({}, DEFAULTS, oUi5 || {});
+                var sSrc = oCfg.cdn +
+                    (oCfg.version ? "/" + oCfg.version : "") +
+                    "/resources/sap-ui-core.js";
+                var oScript = document.createElement("script");
+                oScript.id = "sap-ui-bootstrap";
+                oScript.src = sSrc;
+                oScript.setAttribute("data-sap-ui-theme", oCfg.theme);
+                oScript.setAttribute("data-sap-ui-resourceroots", '{"com.layout.editor": "./"}');
+                oScript.setAttribute("data-sap-ui-compatVersion", oCfg.compatVersion);
+                oScript.setAttribute("data-sap-ui-async", "true");
+                oScript.setAttribute("data-sap-ui-frameOptions", "allow");
+                oScript.setAttribute("data-sap-ui-onInit", "module:sap/ui/core/ComponentSupport");
+                document.head.appendChild(oScript);
+            }
+
+            fetch("config/appConfig.json", { headers: { Accept: "application/json" } })
+                .then(function (oResponse) {
+                    if (!oResponse.ok) {
+                        throw new Error("HTTP " + oResponse.status);
+                    }
+                    return oResponse.json();
+                })
+                .then(function (oConfig) {
+                    // Expose for Component.js (config model) and the run page
+                    window.__editorConfig = oConfig;
+                    bootstrap(oConfig.ui5);
+                })
+                .catch(function () {
+                    // Fallback: versionless CDN with default theme
+                    bootstrap(null);
+                });
+        })();
+    </script>
+</head>
+<body class="sapUiBody sapUiSizeCompact" id="content">
+    <div
+        data-sap-ui-component
+        data-name="com.layout.editor"
+        data-id="container"
+        data-settings='{"id" : "com.layout.editor"}'>
+    </div>
+</body>
+</html>

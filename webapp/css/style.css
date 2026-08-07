@@ -1,0 +1,351 @@
+/* Layout Editor Styles */
+
+.editorCanvas {
+  background-color: #f5f5f5;
+  /* !important beats the inline min-height:auto that FlexItemData writes,
+     so the panel can shrink/grow to exactly the remaining pane height */
+  min-height: 0 !important;
+}
+
+/* Height chain inside the canvas Panel: panel -> wrapping div -> content */
+.editorCanvas > .sapMPanelWrappingDiv {
+  height: 100%;
+}
+
+.editorCanvas .sapMPanelContent {
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.canvasContent {
+  height: 100%;
+  min-height: 0;
+}
+
+/* Flex item wrapper of designCanvas must carry the full height down */
+.canvasContent > .sapMFlexItem {
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.designCanvas {
+  padding: 5px;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+/* Canvas Page must maintain minimum height so content isn't clipped */
+.designCanvas > .sapMFlexItem {
+  height: 100%;
+}
+
+.designCanvas > .sapMFlexItem > .sapMPage {
+  height: 100%;
+  min-height: 350px;
+}
+
+.designCanvas .sapMPageHeader {
+  cursor: pointer;
+}
+
+/* Editor layout (custom splitter).
+   Flex child of the shell VBox: grow/shrink is controlled by FlexItemData,
+   and min-height:0 allows it to shrink below its content size. */
+.editorLayout {
+  width: 100%;
+  /* !important beats the inline min-height:auto that UI5 FlexItemData writes */
+  min-height: 0 !important;
+}
+
+/* Splitter drag handle bars */
+.splitterBar {
+  width: 4px;
+  height: 100%;
+  background-color: #e5e5e5;
+  cursor: col-resize;
+  flex-shrink: 0;
+}
+
+.splitterBar:hover {
+  background-color: #0a6ed1;
+}
+
+/* Make the core:HTML wrapper a proper flex child */
+.editorLayout .sapMFlexItem:has(.splitterBar) {
+  flex-shrink: 0;
+}
+
+/* Each pane scrolls vertically on its own */
+.leftPane {
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+/* The outline ScrollContainer must receive the full pane height,
+   otherwise the tree gets clipped without a scrollbar */
+.leftPane > .sapMFlexItem {
+  height: 100%;
+}
+
+.centerPane {
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-width: 0;
+}
+
+.rightPane {
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+/* Right tab bar (Properties / Aggregations / Events).
+   Force a flex column chain so the Properties content becomes a
+   fixed-height scroll region instead of growing beyond the pane. */
+.rightPane > .sapMFlexItem {
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.rightTabBar {
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.rightTabBar .sapMITBContainerContent {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.rightTabBar .sapMITBContent {
+  padding: 0;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex: 1;
+  min-height: 0;
+  height: auto !important;
+}
+
+/* Prominent scrollbars in the editor panes so users can clearly see
+   that the Properties/Outline areas scroll (thin overlay scrollbars
+   made the clipped content look like a layout bug). */
+.rightPane .sapMScrollCont,
+.rightPane .sapMITBContent,
+.leftPane .sapMScrollCont,
+.centerPane {
+  scrollbar-width: thin;
+  scrollbar-color: #89919a #f2f3f5;
+}
+
+.rightPane .sapMScrollCont::-webkit-scrollbar,
+.rightPane .sapMITBContent::-webkit-scrollbar,
+.leftPane .sapMScrollCont::-webkit-scrollbar,
+.centerPane::-webkit-scrollbar {
+  width: 10px;
+}
+
+.rightPane .sapMScrollCont::-webkit-scrollbar-track,
+.rightPane .sapMITBContent::-webkit-scrollbar-track,
+.leftPane .sapMScrollCont::-webkit-scrollbar-track,
+.centerPane::-webkit-scrollbar-track {
+  background: #f2f3f5;
+}
+
+.rightPane .sapMScrollCont::-webkit-scrollbar-thumb,
+.rightPane .sapMITBContent::-webkit-scrollbar-thumb,
+.leftPane .sapMScrollCont::-webkit-scrollbar-thumb,
+.centerPane::-webkit-scrollbar-thumb {
+  background: #89919a;
+  border-radius: 5px;
+}
+
+.rightPane .sapMScrollCont::-webkit-scrollbar-thumb:hover,
+.rightPane .sapMITBContent::-webkit-scrollbar-thumb:hover,
+.leftPane .sapMScrollCont::-webkit-scrollbar-thumb:hover,
+.centerPane::-webkit-scrollbar-thumb:hover {
+  background: #5b6470;
+}
+
+/* Outline tree */
+.outlineTree .sapMLIB {
+  width: 100%;
+  height: 24px;
+  line-height: 24px;
+  min-height: 24px;
+}
+
+.outlineTree .sapMLIB > .sapMLIBContent > .sapMListTblCell,
+.outlineTree .sapMLIB .sapMTxt {
+  font-size: 0.8rem;
+}
+
+/* Long node names (e.g. sap.ui.layout.form.ResponsiveGridLayout) must
+   truncate with an ellipsis instead of wrapping to a second line */
+.outlineTree .sapMLIB .sapMText {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  max-width: 100%;
+}
+
+.outlineTree .sapMLIB > .sapMLIBContent {
+  overflow: hidden;
+}
+
+.outlineTree {
+  border-top: 1px solid #e5e5e5;
+}
+
+/* Table row hover */
+.sapMListTblRow:hover {
+  background-color: #e8f0fe !important;
+  cursor: pointer;
+}
+
+/* Button states */
+.sapMBtn:hover {
+  opacity: 0.8;
+}
+
+/* Canvas selected control - blue dashed border.
+   !important ensures it wins over controls' :focus outline styles (e.g. sap.m.Button). */
+.controlSelected {
+  outline: 2px dashed #0a6ed1 !important;
+  outline-offset: 2px;
+}
+
+/* ============================================================
+   "Add Control" dialog - polished popup styling
+   ============================================================ */
+
+/* Rounded dialog shell with soft shadow */
+.addCtrlDialog .sapMDialogInner {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+}
+
+/* Header: clean bottom border, semibold title */
+.addCtrlDialog .sapMHeader-CTX {
+  border-bottom: 1px solid #e5e5e5;
+  background: #fff;
+}
+
+.addCtrlDialog .sapMDialogTitle {
+  font-weight: 600;
+}
+
+/* Content area background */
+.addCtrlDialog .sapMDialogSection {
+  background: #fbfcfe;
+}
+
+/* Search field: rounded corners */
+.addCtrlDialog .sapMSFInner {
+  border-radius: 8px;
+}
+
+/* Compact horizontal list rows (icon + name + type on one line) */
+.addCtrlRow {
+  width: 100%;
+  height: 30px;
+  padding: 0 12px;
+  border-radius: 6px;
+  transition: background-color 0.15s ease;
+}
+
+/* Row hover - soft blue highlight */
+.sapMLIBCustom:hover .addCtrlRow,
+.sapMLIBCustom:focus-within .addCtrlRow {
+  background-color: #eef4fc;
+}
+
+.addCtrlRow .addCtrlIcon {
+  color: #0a6ed1;
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+
+.addCtrlRow .addCtrlName {
+  font-weight: 600;
+  color: #32363a;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.addCtrlRow .addCtrlType {
+  color: #8a8a8a;
+  font-size: 0.78rem;
+  margin-left: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Tighten the CustomListItem wrapper so rows stay compact */
+.sapMLIBCustom {
+  padding: 0 2px;
+  border-bottom: 1px solid #f0f1f3;
+}
+
+/* Constrain the add-control list height so it scrolls internally */
+.addCtrlList {
+  height: 350px;
+}
+
+/* Data-bound property expression shown in the Properties panel */
+.boundPropExpr {
+  color: #0a6ed1;
+  font-family: "Consolas", "Menlo", monospace;
+  font-size: 0.82rem;
+  background: #eef4fc;
+  border: 1px solid #d3e2f5;
+  padding: 3px 8px;
+  border-radius: 4px;
+  flex-grow: 1;
+  margin-right: 4px;
+  word-break: break-all;
+}
+
+/* Hint text inside the data-binding dialog */
+.boundPropHint,
+.dialogHint {
+  color: #8a8a8a;
+  font-size: 0.78rem;
+}
+
+/* ABAP type kind shown at the right edge of each binding-tree node */
+.bindingTypeLabel {
+  color: #8a8a8a;
+  font-size: 0.78rem;
+  margin-left: 1rem;
+  flex-shrink: 0;
+}
+
+/* Binding dialog sizes to its content - never show horizontal scroll */
+.bindingDialog .sapMDialogScroll,
+.bindingDialog .sapMDialogScrollCont {
+  overflow-x: hidden;
+}
+
+/* Inner HBox fills the resizable dialog content area */
+.bindingDialog .sapMDialogScrollCont {
+  height: 100%;
+}
+.bindingDialogInner {
+  height: 100%;
+  padding: 0.5rem 1rem;
+  box-sizing: border-box;
+}
+

@@ -1,0 +1,88 @@
+{
+    "_version": "1.12.0",
+    "sap.app": {
+        "id": "com.layout.editor",
+        "type": "application",
+        "title": "SAPUI5 Layout Editor",
+        "description": "Layout Editor Application",
+        "applicationVersion": {
+            "version": "1.0.0"
+        }
+    },
+    "sap.ui": {
+        "technology": "UI5",
+        "deviceTypes": {
+            "desktop": true,
+            "tablet": true,
+            "phone": true
+        }
+    },
+    "sap.ui5": {
+        "dependencies": {
+            "libs": {
+                "sap.m": {},
+                "sap.ui.layout": {},
+                "sap.f": {},
+                "sap.ui.unified": {},
+                "sap.ui.table": {},
+                "sap.uxap": {}
+            }
+        },
+        "models": {
+            "i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "settings": {
+                    "bundleName": "com.layout.editor.i18n.i18n",
+                    "supportedLocales": ["", "ko", "en"],
+                    "fallbackLocale": ""
+                }
+            }
+        },
+        "rootView": {
+            "viewName": "com.layout.editor.view.App",
+            "type": "XML",
+            "id": "appView"
+        },
+        "routing": {
+            "config": {
+                "routerClass": "sap.m.routing.Router",
+                "viewType": "XML",
+                "viewPath": "com.layout.editor.view",
+                "controlId": "appControl",
+                "controlAggregation": "pages",
+                "async": true
+            },
+            "routes": [
+                {
+                    "name": "list",
+                    "pattern": "",
+                    "target": "list"
+                },
+                {
+                    "name": "editor",
+                    "pattern": "editor/{appId}",
+                    "target": "editor"
+                }
+            ],
+            "targets": {
+                "list": {
+                    "viewName": "ListView",
+                    "viewId": "listView",
+                    "viewLevel": 1
+                },
+                "editor": {
+                    "viewName": "EditorView",
+                    "viewId": "editorView",
+                    "viewLevel": 2
+                }
+            }
+        },
+        "resources": {
+            "css": [
+                {
+                    "uri": "css/style.css?v=20260804b"
+                }
+            ]
+        }
+    }
+}
